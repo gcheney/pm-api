@@ -37,6 +37,17 @@ namespace ProjectManager
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler();
+            }
+
+            app.UseStatusCodePages();
+
             app.UseMvc();
         }
     }
