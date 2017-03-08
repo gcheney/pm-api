@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace ProjectManager.Models
 {
@@ -9,5 +10,8 @@ namespace ProjectManager.Models
         public string Description { get; set; }
         public DateTime ReleaseDate { get; set; }
         public bool Completed { get; set; }
+
+        public ICollection<DeveloperDto> Developers { get; set; } 
+            = new List<DeveloperDto>();
     }
 }
