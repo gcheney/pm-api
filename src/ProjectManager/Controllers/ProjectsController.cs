@@ -17,7 +17,7 @@ namespace ProjectManager.Controllers
             return Ok(InMemoryDataStore.Current.Projects);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public IActionResult GetProject(int id)
         {
             // find project
@@ -31,5 +31,6 @@ namespace ProjectManager.Controllers
 
             return Ok(project);
         }
+        
     }
 }
