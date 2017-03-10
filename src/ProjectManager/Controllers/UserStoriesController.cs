@@ -8,11 +8,11 @@ using ProjectManager.Data;
 namespace ProjectManager.Controllers
 {
     [Route("api/projects")]
-    public class DevelopersController : Controller
+    public class UserStoriesController : Controller
     {
-        // GET: api/projects/22/developers
-        [HttpGet("{id:int}/developers")]
-        public IActionResult GetProjectDevelopers(int id)
+        // GET: api/projects/22/userstories
+        [HttpGet("{id:int}/userstories")]
+        public IActionResult GetProjectUserStories(int id)
         {
             var project = InMemoryDataStore.Current.Projects
                 .FirstOrDefault(p => p.Id == id);
@@ -22,12 +22,12 @@ namespace ProjectManager.Controllers
                 return NotFound();
             }
 
-            return Ok(project.Developers);
+            return Ok(project.UserStories);
         }
 
-        // GET: api/projects/22/developers/5
-        [HttpGet("{projectId:int}/developers/{id:int}")]
-        public IActionResult GetSingleDeveloper(int projectId, int id)
+        // GET: api/projects/22/userstories/5
+        [HttpGet("{projectId:int}/userstories/{id:int}")]
+        public IActionResult GetUserStory(int projectId, int id)
         {
             var project = InMemoryDataStore.Current.Projects
                 .FirstOrDefault(p => p.Id == projectId);
@@ -37,14 +37,14 @@ namespace ProjectManager.Controllers
                 return NotFound();
             }
 
-            var developer = project.Developers.FirstOrDefault(d => d.Id == id);
+            var UserStory = project.UserStories.FirstOrDefault(d => d.Id == id);
 
-            if (developer == null)
+            if (UserStory == null)
             {
                 return NotFound();
             }
 
-            return Ok(developer);
+            return Ok(UserStory);
         }
     }
 }
