@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManager.Data;
@@ -12,6 +13,13 @@ namespace ProjectManager.Controllers
     [Route("api/projects")]
     public class UserStoriesController : Controller
     {
+        private ILogger<UserStoriesController> _logger;
+
+        public UserStoriesController(ILogger<UserStoriesController> logger)
+        {
+            _logger = logger;
+        }
+
         // GET: api/projects/22/userstories
         [HttpGet("{id:int}/userstories")]
         public IActionResult GetProjectUserStories(int id)
@@ -20,6 +28,7 @@ namespace ProjectManager.Controllers
 
             if (project == null)
             {
+                _logger.LogInformation($"Could not find user story with id: {id}");
                 return NotFound();
             }
 
@@ -34,20 +43,22 @@ namespace ProjectManager.Controllers
 
             if (project == null)
             {
+                _logger.LogInformation($"Could not find project with id: {projectId}");
                 return NotFound();
             }
 
-            var UserStory = project.UserStories.FirstOrDefault(d => d.Id == id);
+            var userStory = project.UserStories.FirstOrDefault(d => d.Id == id);
 
-            if (UserStory == null)
+            if (userStory == null)
             {
+                _logger.LogInformation($"Could not find user story with id: {id}");
                 return NotFound();
             }
 
-            return Ok(UserStory);
+            return Ok(userStory);
         }
 
-        [HttpPost("{cityId}/userstories")]
+        [HttpPost("{projectId:int}/userstories")]
         public IActionResult CreateUserStory(int projectId, [FromBody] CreateUserStoryDto userStory)
         {
             if (userStory == null)
@@ -70,6 +81,7 @@ namespace ProjectManager.Controllers
 
             if (project == null)
             {
+                _logger.LogInformation($"Could not find project with id: {projectId}");
                 return NotFound();
             }
 
@@ -94,7 +106,7 @@ namespace ProjectManager.Controllers
             });
         }   
 
-        [HttpPut("{projectId}/userstories/{id}")]
+        [HttpPut("{projectId:int}/userstories/{id:int}")]
         public IActionResult UpdateUserStory(int projectId, int id, [FromBody] UpdateUserStoryDto userStory)
         {
             if (userStory == null)
@@ -130,7 +142,7 @@ namespace ProjectManager.Controllers
             return NoContent();
         }
 
-        [HttpPatch("{projectId}/userstories/{id}")]
+        [HttpPatch("{projectId:int}/userstories/{id:int}")]
         public IActionResult PartiallyUpdateUserStory(int projectId, int id,
             [FromBody] JsonPatchDocument<UpdateUserStoryDto> patchDoc)
         {
@@ -179,18 +191,20 @@ namespace ProjectManager.Controllers
             return NoContent();
         }        
 
-        [HttpDelete("{projectId}/userstories/{id}")]
+        [HttpDelete("{projectId:int}/userstories/{id:int}")]
         public IActionResult DeletePointOfInterest(int projectId, int id)
         {
             var project = InMemoryDataStore.Current.Projects.FirstOrDefault(p => p.Id == projectId);
             if (project == null)
             {
+                _logger.LogInformation($"Could not find project with id: {projectId}");
                 return NotFound();
             }
 
             var userStoryToDelete = project.UserStories.FirstOrDefault(us => us.Id == id);
             if (userStoryToDelete == null)
             {
+                _logger.LogInformation($"Could not find user story with id: {id}");
                 return NotFound();
             }
 
