@@ -26,7 +26,7 @@ namespace ProjectManager.Controllers
         }
 
         // GET: api/projects/22/userstories/5
-        [HttpGet("{projectId:int}/userstories/{id:int}")]
+        [HttpGet("{projectId:int}/userstories/{id:int}", Name = "GetUserStory")]
         public IActionResult GetUserStory(int projectId, int id)
         {
             var project = InMemoryDataStore.Current.Projects.FirstOrDefault(p => p.Id == projectId);
@@ -75,6 +75,11 @@ namespace ProjectManager.Controllers
             };
 
             project.UserStories.Add(newUserStory);
+
+            return CreatedAtRoute("GetUserStory", new {
+                projectId = projectId,
+                id = newUserStory.Id
+            });
         }   
     }
 }
