@@ -24,7 +24,7 @@ namespace ProjectManager.Data
                         new UserStoryDto()
                         {
                             Id = 1, 
-                            Title = "Add Login Screen",
+                            Name = "Add Login Screen",
                             Description = "A login screen needs to be added to the homepage",
                             WorkRemaining = "3 hours",
                             Completed = false

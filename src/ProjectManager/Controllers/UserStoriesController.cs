@@ -55,9 +55,9 @@ namespace ProjectManager.Controllers
             }
 
             // add model state error 
-            if (userStory.Description == userStory.Title)
+            if (userStory.Description == userStory.Name)
             {
-                ModelState.AddModelError("Details", "The provided description should be different than the title");
+                ModelState.AddModelError("Details", "The provided description should be different than the Name");
             }
 
             if (!ModelState.IsValid)
@@ -79,7 +79,7 @@ namespace ProjectManager.Controllers
             var newUserStory = new UserStoryDto()
             {
                 Id = ++maxUserStoryId,
-                Title = userStory.Title,
+                Name = userStory.Name,
                 Description = userStory.Description,
                 WorkRemaining = userStory.WorkRemaining,
                 Completed = userStory.Completed
@@ -122,7 +122,7 @@ namespace ProjectManager.Controllers
                 return NotFound();
             }
 
-            userStoryToUpdate.Title = userStory.Title;
+            userStoryToUpdate.Name = userStory.Name;
             userStoryToUpdate.Description = userStory.Description;
             userStoryToUpdate.WorkRemaining = userStory.WorkRemaining;
             userStoryToUpdate.Completed = userStory.Completed;

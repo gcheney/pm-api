@@ -4,9 +4,9 @@ namespace ProjectManager.Models
 {
     public class UpdateUserStoryDto
     {
-        [Required(ErrorMessage = "A User Story must include a title")]
-        [MaxLength(50, ErrorMessage = "Title cannot exceed 50 characters")]
-        public string Title { get; set; }
+        [Required(ErrorMessage = "A User Story must include a Name")]
+        [MaxLength(50, ErrorMessage = "Name cannot exceed 50 characters")]
+        public string Name { get; set; }
 
         [MaxLength(200, ErrorMessage = "Description cannot exceed 200 characters")]
         public string Description { get; set; }
