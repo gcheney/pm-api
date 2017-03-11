@@ -21,8 +21,7 @@ namespace ProjectManager.Controllers
         public IActionResult GetProject(int id)
         {
             // find project
-            var project = InMemoryDataStore.Current.Projects    
-                .FirstOrDefault(p => p.Id == id);
+            var project = InMemoryDataStore.Current.Projects.FirstOrDefault(p => p.Id == id);
                 
             if (project == null)
             {

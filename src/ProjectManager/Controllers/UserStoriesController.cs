@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManager.Data;
+using ProjectManager.Models;
 
 namespace ProjectManager.Controllers
 {
@@ -14,8 +15,7 @@ namespace ProjectManager.Controllers
         [HttpGet("{id:int}/userstories")]
         public IActionResult GetProjectUserStories(int id)
         {
-            var project = InMemoryDataStore.Current.Projects
-                .FirstOrDefault(p => p.Id == id);
+            var project = InMemoryDataStore.Current.Projects.FirstOrDefault(p => p.Id == id);
 
             if (project == null)
             {
@@ -29,8 +29,7 @@ namespace ProjectManager.Controllers
         [HttpGet("{projectId:int}/userstories/{id:int}")]
         public IActionResult GetUserStory(int projectId, int id)
         {
-            var project = InMemoryDataStore.Current.Projects
-                .FirstOrDefault(p => p.Id == projectId);
+            var project = InMemoryDataStore.Current.Projects.FirstOrDefault(p => p.Id == projectId);
 
             if (project == null)
             {
@@ -46,5 +45,36 @@ namespace ProjectManager.Controllers
 
             return Ok(UserStory);
         }
+
+        [HttpPostAttribute("{cityId}/userstories")]
+        public IActionResult CreateUserStory(int projectId, [FromBody] CreateUserStoryDto userStory)
+        {
+            if (userStory == null)
+            {
+                return BadRequest();
+            }
+
+            var project = InMemoryDataStore.Current.Projects.FirstOrDefault(p => p.Id == projectId);
+
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            // for  InMemoryDataStore
+            var maxUserStoryId = InMemoryDataStore.Current.Projects.SelectMany(
+                    p => p.UserStories).Max(us => us.Id);
+
+            var newUserStory = new UserStoryDto()
+            {
+                Id = ++maxUserStoryId,
+                Title = userStory.Title,
+                Details = userStory.Details,
+                WorkRemaining = userStory.WorkRemaining,
+                Completed = userStory.Completed
+            };
+
+            project.UserStories.Add(newUserStory);
+        }   
     }
 }
