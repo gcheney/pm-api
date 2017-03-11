@@ -73,7 +73,7 @@ namespace ProjectManager.Controllers
                 return NotFound();
             }
 
-            // for  InMemoryDataStore
+            // for  InMemoryDataStore id increment
             var maxUserStoryId = InMemoryDataStore.Current.Projects.SelectMany(
                     p => p.UserStories).Max(us => us.Id);
 
@@ -179,6 +179,24 @@ namespace ProjectManager.Controllers
             return NoContent();
         }        
 
-        
+        [HttpDelete("{projectId}/userstories/{id}")]
+        public IActionResult DeletePointOfInterest(int projectId, int id)
+        {
+            var project = InMemoryDataStore.Current.Projects.FirstOrDefault(p => p.Id == projectId);
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            var userStoryToDelete = project.UserStories.FirstOrDefault(us => us.Id == id);
+            if (userStoryToDelete == null)
+            {
+                return NotFound();
+            }
+
+            project.UserStories.Remove(userStoryToDelete);
+
+            return NoContent();
+        }
     }
 }
