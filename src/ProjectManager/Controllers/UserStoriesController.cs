@@ -54,6 +54,17 @@ namespace ProjectManager.Controllers
                 return BadRequest();
             }
 
+            // add model state error
+            if (userStory.Description == userStory.Title)
+            {
+                ModelState.AddModelError("Details", "The provided description should be different than the title");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var project = InMemoryDataStore.Current.Projects.FirstOrDefault(p => p.Id == projectId);
 
             if (project == null)
@@ -69,7 +80,7 @@ namespace ProjectManager.Controllers
             {
                 Id = ++maxUserStoryId,
                 Title = userStory.Title,
-                Details = userStory.Details,
+                Description = userStory.Description,
                 WorkRemaining = userStory.WorkRemaining,
                 Completed = userStory.Completed
             };
