@@ -25,7 +25,7 @@ namespace ProjectManager.Data
                         {
                             Id = 1, 
                             Title = "Add Login Screen",
-                            Details = "A login screen needs to be added to the homepage",
+                            Description = "A login screen needs to be added to the homepage",
                             WorkRemaining = "3 hours",
                             Completed = false
                         }
