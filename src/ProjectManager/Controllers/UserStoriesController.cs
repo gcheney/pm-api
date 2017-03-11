@@ -46,7 +46,7 @@ namespace ProjectManager.Controllers
             return Ok(UserStory);
         }
 
-        [HttpPostAttribute("{cityId}/userstories")]
+        [HttpPost("{cityId}/userstories")]
         public IActionResult CreateUserStory(int projectId, [FromBody] CreateUserStoryDto userStory)
         {
             if (userStory == null)
@@ -54,7 +54,7 @@ namespace ProjectManager.Controllers
                 return BadRequest();
             }
 
-            // add model state error
+            // add model state error 
             if (userStory.Description == userStory.Title)
             {
                 ModelState.AddModelError("Details", "The provided description should be different than the title");
@@ -92,5 +92,43 @@ namespace ProjectManager.Controllers
                 id = newUserStory.Id
             });
         }   
+
+        [HttpPut("{projectId}/userstories/{id}")]
+        public IActionResult UpdateUserStory(int projectId, int id, [FromBody] UpdateUserStoryDto userStory)
+        {
+            if (userStory == null)
+            {
+                return BadRequest();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var project = InMemoryDataStore.Current.Projects.FirstOrDefault(p => p.Id == projectId);
+
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+
+
+            var userStoryToUpdate = project.UserStories.FirstOrDefault(us => us.Id == id);
+
+            if (userStoryToUpdate == null)
+            {
+                return NotFound();
+            }
+
+            userStoryToUpdate.Title = userStory.Title;
+            userStoryToUpdate.Description = userStory.Description;
+            userStoryToUpdate.WorkRemaining = userStory.WorkRemaining;
+            userStoryToUpdate.Completed = userStory.Completed;
+
+
+            return NoContent();
+        }
     }
 }
