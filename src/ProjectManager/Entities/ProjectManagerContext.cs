@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
 namespace ProjectManager.Entities
@@ -9,12 +7,12 @@ namespace ProjectManager.Entities
         public ProjectManagerContext(DbContextOptions<ProjectManagerContext> options)
             : base(options)
         {
-            Database.EnsureCreated();
+            Database.Migrate();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Filename=./Thoughtwave.db");
+            optionsBuilder.UseSqlite("Filename=./ProjectManager.db");
         }
 
         public DbSet<Project> Projects { get; set; }
