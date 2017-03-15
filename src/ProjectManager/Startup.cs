@@ -9,7 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc.Formatters;
-using ProjectManager.Entities;
+using ProjectManager.Data;
+using ProjectManager.Extensions;
 
 namespace ProjectManager
 {
@@ -41,7 +42,9 @@ namespace ProjectManager
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, 
+            ILoggerFactory loggerFactory,
+            ProjectManagerContext projectManagerContext)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -54,6 +57,8 @@ namespace ProjectManager
             {
                 app.UseExceptionHandler();
             }
+
+            projectManagerContext.EnsureSeedDataForContext();
 
             app.UseStatusCodePages();
 
