@@ -1,13 +1,14 @@
 using Microsoft.EntityFrameworkCore;
+using ProjectManager.Entities;
 
-namespace ProjectManager.Entities
+namespace ProjectManager.Data
 {
     public class ProjectManagerContext : DbContext
     {
         public ProjectManagerContext(DbContextOptions<ProjectManagerContext> options)
             : base(options)
         {
-            Database.Migrate();
+            Database.EnsureCreated();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
