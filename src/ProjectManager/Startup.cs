@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using ProjectManager.Data;
+using ProjectManager.Services;
 using ProjectManager.Extensions;
 
 namespace ProjectManager
@@ -39,6 +40,8 @@ namespace ProjectManager
             services.AddMvc()
                 .AddMvcOptions(o => o.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter()))
                 .AddMvcOptions(o => o.InputFormatters.Add(new XmlDataContractSerializerInputFormatter()));
+
+            services.AddScoped<IProjectManagerRepository, ProjectManagerRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
