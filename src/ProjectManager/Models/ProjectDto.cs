@@ -8,7 +8,6 @@ namespace ProjectManager.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public DateTime ReleaseDate { get; set; }
 
         public ICollection<UserStoryDto> UserStories { get; set; } = new List<UserStoryDto>();
     }

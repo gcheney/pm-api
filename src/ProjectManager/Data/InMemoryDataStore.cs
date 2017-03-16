@@ -18,7 +18,6 @@ namespace ProjectManager.Data
                     Id = 1,
                     Name = "Project 1",
                     Description = "The first project",
-                    ReleaseDate = new DateTime(2018, 2, 1),
                     UserStories = new List<UserStoryDto>()
                     {
                         new UserStoryDto()
@@ -36,14 +35,12 @@ namespace ProjectManager.Data
                     Id = 2,
                     Name = "Project 2",
                     Description = "The second project",
-                    ReleaseDate = new DateTime(2019, 1, 1)
                 },
                 new ProjectDto()
                 {
                     Id = 3,
                     Name = "Project Alpha",
                     Description = "The finished project",
-                    ReleaseDate = new DateTime(2016, 1, 1),
                 }
             };
         }

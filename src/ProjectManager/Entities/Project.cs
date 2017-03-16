@@ -17,7 +17,6 @@ namespace ProjectManager.Entities
 
         [MaxLength(200)]
         public string Description { get; set; }
-        public DateTime ReleaseDate { get; set; }
 
         public ICollection<UserStory> UserStories { get; set; }
     }
