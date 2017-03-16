@@ -3,32 +3,57 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using ProjectManager.Services;
 using ProjectManager.Data;
+using ProjectManager.Entities;
+using ProjectManager.Models;
+using AutoMapper;
 
 namespace ProjectManager.Controllers
 {
     [Route("api/projects")]
     public class ProjectsController : Controller
     {
+        private ProjectManagerRepository _projectManagerRepository;
+        private ILogger<UserStoriesController> _logger;
+
+        public ProjectsController(ProjectManagerRepository projectManagerRepository,
+            ILogger<UserStoriesController> logger)
+        {
+            _projectManagerRepository = projectManagerRepository;
+            _logger = logger;
+        }
+
         // GET api/projects
         [HttpGet()]
-        public IActionResult GetProjects()
+        public async Task<IActionResult> GetProjects()
         {
-            return Ok(InMemoryDataStore.Current.Projects);
+            var projectEntities = await _projectManagerRepository.GetAllProjectsAsync();
+            var projectDtos = Mapper.Map<IEnumerable<ProjectDto>>(projectEntities);
+            return Ok(projectDtos);
         }
 
         [HttpGet("{id:int}")]
-        public IActionResult GetProject(int id)
+        public async Task<IActionResult> GetProject(int id, bool includeUserStories)
         {
-            // find project
-            var project = InMemoryDataStore.Current.Projects.FirstOrDefault(p => p.Id == id);
-                
+            var project = await _projectManagerRepository.GetProjectByIdAsync(id, includeUserStories);
+
             if (project == null)
             {
+                _logger.LogInformation($"No poject found with id {id}");
                 return NotFound();
             }
 
-            return Ok(project);
+            if (includeUserStories)
+            {
+                var projectWithUserStory = Mapper.Map<ProjectDto>(project);
+                return Ok(projectWithUserStory);
+            }
+
+            // find project
+            var projectWithoutUserStory = Mapper.Map<ProjectWithoutUserStoriesDto>(project);
+            return Ok(projectWithoutUserStory);
         }
         
     }
