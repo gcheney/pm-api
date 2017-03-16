@@ -69,7 +69,7 @@ namespace ProjectManager
             AutoMapper.Mapper.Initialize(cfg =>
             {
                 cfg.CreateMap<Entities.Project, Models.ProjectDto>();
-                cfg.CreateMap<Entities.Project, Models.ProjectDto>();
+                cfg.CreateMap<Entities.Project, Models.ProjectWithoutUserStoriesDto>();
                 cfg.CreateMap<Entities.UserStory, Models.UserStoryDto>();
             });
 

@@ -13,7 +13,7 @@ namespace ProjectManager.Services
 
         public ProjectManagerRepository(ProjectManagerContext content)
         {
-            content = _context;
+            _context = content;
         }
 
         public async Task<IEnumerable<Project>> GetAllProjectsAsync()
@@ -37,10 +37,11 @@ namespace ProjectManager.Services
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<UserStory>> GetUserStoriesForProjectAsync(int projectId)
+        public async Task<IEnumerable<UserStory>> GetUserStoriesByProjectIdAsync(int projectId)
         {
             return await _context.UserStories
-                .Where(p => p.Id == projectId)
+                .Where(us => us.ProjectId == projectId)
+                .OrderBy(us => us.Name)
                 .ToListAsync();
         }
 

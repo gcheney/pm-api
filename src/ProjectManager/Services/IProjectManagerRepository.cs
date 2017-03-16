@@ -10,7 +10,7 @@ namespace ProjectManager.Services
 
         Task<Project> GetProjectByIdAsync(int id, bool includeUserStories);
 
-        Task<IEnumerable<UserStory>> GetUserStoriesForProjectAsync(int projectId);
+        Task<IEnumerable<UserStory>> GetUserStoriesByProjectIdAsync(int projectId);
 
         Task<UserStory> GetUserStoryByIdAsync(int projectId, int userStoryId);
     }
