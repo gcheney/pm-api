@@ -15,10 +15,10 @@ namespace ProjectManager.Controllers
     [Route("api/projects")]
     public class ProjectsController : Controller
     {
-        private ProjectManagerRepository _projectManagerRepository;
+        private IProjectManagerRepository _projectManagerRepository;
         private ILogger<UserStoriesController> _logger;
 
-        public ProjectsController(ProjectManagerRepository projectManagerRepository,
+        public ProjectsController(IProjectManagerRepository projectManagerRepository,
             ILogger<UserStoriesController> logger)
         {
             _projectManagerRepository = projectManagerRepository;
@@ -41,7 +41,7 @@ namespace ProjectManager.Controllers
 
             if (project == null)
             {
-                _logger.LogInformation($"No poject found with id {id}");
+                _logger.LogInformation($"No project found with id {id}");
                 return NotFound();
             }
 
@@ -50,10 +50,11 @@ namespace ProjectManager.Controllers
                 var projectWithUserStory = Mapper.Map<ProjectDto>(project);
                 return Ok(projectWithUserStory);
             }
-
-            // find project
-            var projectWithoutUserStory = Mapper.Map<ProjectWithoutUserStoriesDto>(project);
-            return Ok(projectWithoutUserStory);
+            else 
+            {
+                var projectWithoutUserStory = Mapper.Map<ProjectWithoutUserStoriesDto>(project);
+                return Ok(projectWithoutUserStory);
+            }
         }
         
     }
