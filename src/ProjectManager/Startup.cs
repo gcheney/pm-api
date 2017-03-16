@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using ProjectManager.Data;
 using ProjectManager.Services;
 using ProjectManager.Extensions;
+using AutoMapper;
 
 namespace ProjectManager
 {
@@ -64,6 +65,13 @@ namespace ProjectManager
             projectManagerContext.EnsureSeedDataForContext();
 
             app.UseStatusCodePages();
+
+            AutoMapper.Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<Entities.Project, Models.ProjectDto>();
+                cfg.CreateMap<Entities.Project, Models.ProjectDto>();
+                cfg.CreateMap<Entities.UserStory, Models.UserStoryDto>();
+            });
 
             app.UseMvc();
         }
