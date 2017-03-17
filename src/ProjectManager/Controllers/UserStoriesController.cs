@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManager.Data;
 using ProjectManager.Models;
+using ProjectManager.Services;
+using AutoMapper;
 
 namespace ProjectManager.Controllers
 {
@@ -14,40 +16,36 @@ namespace ProjectManager.Controllers
     public class UserStoriesController : Controller
     {
         private ILogger<UserStoriesController> _logger;
+        private IProjectManagerRepository _projectManagerRepository;
 
-        public UserStoriesController(ILogger<UserStoriesController> logger)
+        public UserStoriesController(ILogger<UserStoriesController> logger,
+            IProjectManagerRepository projectManagerRepository)
         {
+            _projectManagerRepository = projectManagerRepository;
             _logger = logger;
         }
 
         // GET: api/projects/22/userstories
         [HttpGet("{id:int}/userstories")]
-        public IActionResult GetProjectUserStories(int id)
+        public async Task<IActionResult> GetProjectUserStories(int id)
         {
-            var project = InMemoryDataStore.Current.Projects.FirstOrDefault(p => p.Id == id);
+            var userStories = await _projectManagerRepository.GetUserStoriesByProjectIdAsync(id);
 
-            if (project == null)
+            if (userStories == null)
             {
-                _logger.LogInformation($"Could not find user story with id: {id}");
+                _logger.LogInformation($"Could not find user stories for project with id: {id}");
                 return NotFound();
             }
 
-            return Ok(project.UserStories);
+            var userStoriesDto = Mapper.Map<IEnumerable<UserStoryDto>>(userStories);
+            return Ok(userStoriesDto);
         }
 
         // GET: api/projects/22/userstories/5
         [HttpGet("{projectId:int}/userstories/{id:int}", Name = "GetUserStory")]
-        public IActionResult GetUserStory(int projectId, int id)
+        public async Task<IActionResult> GetUserStory(int projectId, int id)
         {
-            var project = InMemoryDataStore.Current.Projects.FirstOrDefault(p => p.Id == projectId);
-
-            if (project == null)
-            {
-                _logger.LogInformation($"Could not find project with id: {projectId}");
-                return NotFound();
-            }
-
-            var userStory = project.UserStories.FirstOrDefault(d => d.Id == id);
+            var userStory = await _projectManagerRepository.GetUserStoryByIdAsync(projectId, id);
 
             if (userStory == null)
             {
@@ -55,7 +53,8 @@ namespace ProjectManager.Controllers
                 return NotFound();
             }
 
-            return Ok(userStory);
+            var userStoryDto = Mapper.Map<UserStoryDto>(userStory);
+            return Ok(userStoryDto);
         }
 
         [HttpPost("{projectId:int}/userstories")]
