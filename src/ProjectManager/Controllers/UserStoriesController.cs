@@ -18,11 +18,11 @@ namespace ProjectManager.Controllers
         private ILogger<UserStoriesController> _logger;
         private IProjectManagerRepository _projectManagerRepository;
 
-        public UserStoriesController(ILogger<UserStoriesController> logger,
+        public UserStoriesController(ILoggerFactory loggerFactory,
             IProjectManagerRepository projectManagerRepository)
         {
             _projectManagerRepository = projectManagerRepository;
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<UserStoriesController>();
         }
 
         // GET: api/projects/22/userstories

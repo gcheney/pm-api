@@ -16,13 +16,13 @@ namespace ProjectManager.Controllers
     public class ProjectsController : Controller
     {
         private IProjectManagerRepository _projectManagerRepository;
-        private ILogger<UserStoriesController> _logger;
+        private ILogger<ProjectsController> _logger;
 
-        public ProjectsController(IProjectManagerRepository projectManagerRepository,
-            ILogger<UserStoriesController> logger)
+        public ProjectsController(ILoggerFactory loggerFactory,
+            IProjectManagerRepository projectManagerRepository)
         {
             _projectManagerRepository = projectManagerRepository;
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<ProjectsController>();
         }
 
         // GET api/projects
