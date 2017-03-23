@@ -51,5 +51,21 @@ namespace ProjectManager.Services
                 .Where(us => us.ProjectId == projectId && us.Id == userStoryId)
                 .FirstOrDefaultAsync();
         }
+
+        public async Task<bool> ProjectExistAsync(int projectId)
+        {
+            return await _context.Projects.AnyAsync(p => p.Id == projectId);
+        }
+
+        public async void AddUserStoryForProjectAsync(int projectId, UserStory userStoryToSave)
+        {
+            var project = await GetProjectByIdAsync(projectId, false);
+            project.UserStories.Add(userStoryToSave);
+        }
+
+        public async Task<bool> SaveAsync()
+        {
+            return (await _context.SaveChangesAsync() > 0);
+        }
     }
 }

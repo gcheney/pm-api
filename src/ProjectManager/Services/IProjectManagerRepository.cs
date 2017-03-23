@@ -13,5 +13,11 @@ namespace ProjectManager.Services
         Task<IEnumerable<UserStory>> GetUserStoriesByProjectIdAsync(int projectId);
 
         Task<UserStory> GetUserStoryByIdAsync(int projectId, int userStoryId);
+
+        Task<bool> ProjectExistAsync(int projectId);
+
+        void AddUserStoryForProjectAsync(int projectId, UserStory userStoryToSave);
+
+        Task<bool> SaveAsync();
     }
 }
