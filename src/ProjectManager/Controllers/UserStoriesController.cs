@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManager.Data;
 using ProjectManager.Models;
+using ProjectManager.Entities;
 using ProjectManager.Services;
 using AutoMapper;
 
@@ -58,7 +59,8 @@ namespace ProjectManager.Controllers
         }
 
         [HttpPost("{projectId:int}/userstories")]
-        public IActionResult CreateUserStory(int projectId, [FromBody] CreateUserStoryDto userStory)
+        public async Task<IActionResult> CreateUserStory(int projectId, 
+            [FromBody] CreateUserStoryDto userStory)
         {
             if (userStory == null)
             {
@@ -76,33 +78,28 @@ namespace ProjectManager.Controllers
                 return BadRequest(ModelState);
             }
 
-            var project = InMemoryDataStore.Current.Projects.FirstOrDefault(p => p.Id == projectId);
-
-            if (project == null)
+            if (! await _projectManagerRepository.ProjectExistAsync(projectId))
             {
-                _logger.LogInformation($"Could not find project with id: {projectId}");
                 return NotFound();
             }
 
-            // for  InMemoryDataStore id increment
-            var maxUserStoryId = InMemoryDataStore.Current.Projects.SelectMany(
-                    p => p.UserStories).Max(us => us.Id);
+            var userStoryToSave = Mapper.Map<UserStory>(userStory);
 
-            var newUserStory = new UserStoryDto()
+            _projectManagerRepository.AddUserStoryForProjectAsync(projectId, userStoryToSave);
+
+            if (! await _projectManagerRepository.SaveAsync())
             {
-                Id = ++maxUserStoryId,
-                Name = userStory.Name,
-                Description = userStory.Description,
-                WorkRemaining = userStory.WorkRemaining,
-                Completed = userStory.Completed
-            };
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
 
-            project.UserStories.Add(newUserStory);
+            var createdUserStoryToReturn = Mapper.Map<UserStoryDto>(userStoryToSave);
 
-            return CreatedAtRoute("GetUserStory", new {
-                projectId = projectId,
-                id = newUserStory.Id
-            });
+            return CreatedAtRoute("GetUserStory", new 
+                { 
+                    projectId = projectId, 
+                    id = createdUserStoryToReturn.Id 
+                }, 
+                createdUserStoryToReturn);
         }   
 
         [HttpPut("{projectId:int}/userstories/{id:int}")]
