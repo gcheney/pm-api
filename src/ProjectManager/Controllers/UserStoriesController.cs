@@ -103,7 +103,8 @@ namespace ProjectManager.Controllers
         }   
 
         [HttpPut("{projectId:int}/userstories/{id:int}")]
-        public IActionResult UpdateUserStory(int projectId, int id, [FromBody] UpdateUserStoryDto userStory)
+        public async Task<IActionResult> UpdateUserStory(int projectId, int id,     
+            [FromBody] UpdateUserStoryDto userStory)
         {
             if (userStory == null)
             {
@@ -115,25 +116,23 @@ namespace ProjectManager.Controllers
                 return BadRequest(ModelState);
             }
 
-            var project = InMemoryDataStore.Current.Projects.FirstOrDefault(p => p.Id == projectId);
-
-            if (project == null)
+            if (! await _projectManagerRepository.ProjectExistAsync(projectId))
             {
                 return NotFound();
             }
 
-            var userStoryToUpdate = project.UserStories.FirstOrDefault(us => us.Id == id);
-
-            if (userStoryToUpdate == null)
+            var userStoryEntity = await _projectManagerRepository.GetUserStoryByIdAsync(projectId, id);
+            if (userStoryEntity == null)
             {
                 return NotFound();
             }
 
-            userStoryToUpdate.Name = userStory.Name;
-            userStoryToUpdate.Description = userStory.Description;
-            userStoryToUpdate.WorkRemaining = userStory.WorkRemaining;
-            userStoryToUpdate.Completed = userStory.Completed;
+            Mapper.Map(userStory, userStoryEntity);
 
+            if (!await _projectManagerRepository.SaveAsync())
+            {
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
 
             return NoContent();
         }

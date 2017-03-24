@@ -10,6 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using ProjectManager.Data;
+using ProjectManager.Models;
+using ProjectManager.Entities;
 using ProjectManager.Services;
 using ProjectManager.Extensions;
 using AutoMapper;
@@ -68,9 +70,11 @@ namespace ProjectManager
 
             AutoMapper.Mapper.Initialize(cfg =>
             {
-                cfg.CreateMap<Entities.Project, Models.ProjectDto>();
-                cfg.CreateMap<Entities.Project, Models.ProjectWithoutUserStoriesDto>();
-                cfg.CreateMap<Entities.UserStory, Models.UserStoryDto>();
+                cfg.CreateMap<Project, ProjectDto>();
+                cfg.CreateMap<Project, ProjectWithoutUserStoriesDto>();
+                cfg.CreateMap<UserStory, UserStoryDto>();
+                cfg.CreateMap<CreateUserStoryDto, UserStory>();
+                cfg.CreateMap<UpdateUserStoryDto, UserStory>();
             });
 
             app.UseMvc();
