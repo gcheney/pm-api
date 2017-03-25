@@ -187,23 +187,26 @@ namespace ProjectManager.Controllers
         }        
 
         [HttpDelete("{projectId:int}/userstories/{id:int}")]
-        public IActionResult DeletePointOfInterest(int projectId, int id)
+        public async Task<IActionResult> DeletePointOfInterest(int projectId, int id)
         {
-            var project = InMemoryDataStore.Current.Projects.FirstOrDefault(p => p.Id == projectId);
-            if (project == null)
+            if (!await _projectManagerRepository.ProjectExistAsync(projectId))
             {
-                _logger.LogInformation($"Could not find project with id: {projectId}");
                 return NotFound();
             }
 
-            var userStoryToDelete = project.UserStories.FirstOrDefault(us => us.Id == id);
-            if (userStoryToDelete == null)
+            var userStoryEntity = await _projectManagerRepository.GetUserStoryByIdAsync(projectId, id);
+
+            if (userStoryEntity == null)
             {
-                _logger.LogInformation($"Could not find user story with id: {id}");
                 return NotFound();
             }
 
-            project.UserStories.Remove(userStoryToDelete);
+            _projectManagerRepository.DeleteUserStory(userStoryEntity);
+
+            if (!await _projectManagerRepository.SaveAsync())
+            {
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
 
             return NoContent();
         }

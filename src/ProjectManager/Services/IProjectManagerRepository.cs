@@ -18,6 +18,8 @@ namespace ProjectManager.Services
 
         void AddUserStoryForProjectAsync(int projectId, UserStory userStoryToSave);
 
+        void DeleteUserStory(UserStory userStory);
+
         Task<bool> SaveAsync();
     }
 }

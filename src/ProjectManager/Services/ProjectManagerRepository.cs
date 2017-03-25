@@ -63,6 +63,11 @@ namespace ProjectManager.Services
             project.UserStories.Add(userStoryToSave);
         }
 
+        public void DeleteUserStory(UserStory userStory)
+        {
+            _context.UserStories.Remove(userStory);
+        }
+
         public async Task<bool> SaveAsync()
         {
             return (await _context.SaveChangesAsync() > 0);
