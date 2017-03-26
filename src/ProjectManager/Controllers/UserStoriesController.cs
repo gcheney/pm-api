@@ -138,7 +138,7 @@ namespace ProjectManager.Controllers
         }
 
         [HttpPatch("{projectId:int}/userstories/{id:int}")]
-        public IActionResult PartiallyUpdateUserStory(int projectId, int id,
+        public async Task<IActionResult> PartiallyUpdateUserStory(int projectId, int id,
             [FromBody] JsonPatchDocument<UpdateUserStoryDto> patchDoc)
         {
             if (patchDoc == null)
@@ -146,31 +146,29 @@ namespace ProjectManager.Controllers
                 return BadRequest();
             }
 
-            var project = InMemoryDataStore.Current.Projects.FirstOrDefault(p => p.Id == projectId);
-            if (project == null)
+            if (!await _projectManagerRepository.ProjectExistAsync(projectId))
             {
                 return NotFound();
             }
 
-            var userStory = project.UserStories.FirstOrDefault(us => us.Id == id);
-            if (userStory == null)
+            var userStoryEntity = await _projectManagerRepository.GetUserStoryByIdAsync(projectId, id);
+            if (userStoryEntity == null)
             {
                 return NotFound();
             }
 
-            var userStoryToPatch = new UpdateUserStoryDto()
-            {
-                Name = userStory.Name,
-                Description = userStory.Description,
-                WorkRemaining = userStory.WorkRemaining,
-                Completed = userStory.Completed
-            };
+            var userStoryToPatch = Mapper.Map<UpdateUserStoryDto>(userStoryEntity);
 
             patchDoc.ApplyTo(userStoryToPatch, ModelState);
 
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+
+            if (userStoryToPatch.Description == userStoryToPatch.Name)
+            {
+                ModelState.AddModelError("Description", "The provided description should be different from the name.");
             }
 
             TryValidateModel(userStoryToPatch);
@@ -180,8 +178,12 @@ namespace ProjectManager.Controllers
                 return BadRequest(ModelState);
             }
 
-            userStory.Name = userStoryToPatch.Name;
-            userStory.Description = userStoryToPatch.Description;
+            Mapper.Map(userStoryToPatch, userStoryEntity);
+
+            if (!await _projectManagerRepository.SaveAsync())
+            {
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
 
             return NoContent();
         }        
