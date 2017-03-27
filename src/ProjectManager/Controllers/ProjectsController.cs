@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ProjectManager.Services;
-using ProjectManager.Data;
-using ProjectManager.Entities;
 using ProjectManager.Models;
 using AutoMapper;
 
@@ -15,8 +13,8 @@ namespace ProjectManager.Controllers
     [Route("api/projects")]
     public class ProjectsController : Controller
     {
-        private IProjectManagerRepository _projectManagerRepository;
-        private ILogger<ProjectsController> _logger;
+        private readonly IProjectManagerRepository _projectManagerRepository;
+        private readonly ILogger<ProjectsController> _logger;
 
         public ProjectsController(ILoggerFactory loggerFactory,
             IProjectManagerRepository projectManagerRepository)

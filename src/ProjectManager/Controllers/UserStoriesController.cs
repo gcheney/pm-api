@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using ProjectManager.Data;
 using ProjectManager.Models;
 using ProjectManager.Entities;
 using ProjectManager.Services;
@@ -16,8 +15,8 @@ namespace ProjectManager.Controllers
     [Route("api/projects")]
     public class UserStoriesController : Controller
     {
-        private ILogger<UserStoriesController> _logger;
-        private IProjectManagerRepository _projectManagerRepository;
+        private readonly ILogger<UserStoriesController> _logger;
+        private readonly IProjectManagerRepository _projectManagerRepository;
 
         public UserStoriesController(ILoggerFactory loggerFactory,
             IProjectManagerRepository projectManagerRepository)
