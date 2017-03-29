@@ -37,6 +37,11 @@ namespace ProjectManager.Services
                 .FirstOrDefaultAsync();
         }
 
+        public async void AddProjectAsync(Project project)
+        {
+            await _context.Projects.AddAsync(project);
+        }
+
         public async Task<IEnumerable<UserStory>> GetUserStoriesByProjectIdAsync(int projectId)
         {
             return await _context.UserStories
