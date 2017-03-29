@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ProjectManager.Services;
 using ProjectManager.Models;
+using ProjectManager.Entities;
 using AutoMapper;
 
 namespace ProjectManager.Controllers
@@ -33,7 +34,7 @@ namespace ProjectManager.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetProject(int id, bool includeUserStories)
+        public async Task<IActionResult> GetProject(int id, bool includeUserStories = false)
         {
             var project = await _projectManagerRepository.GetProjectByIdAsync(id, includeUserStories);
 
@@ -54,6 +55,37 @@ namespace ProjectManager.Controllers
                 return Ok(projectWithoutUserStory);
             }
         }
+
+        [HttpPost()]
+        public async Task<IActionResult> CreateProject([FromBody] CreateProjectDto project)
+        {
+            if (project == null)
+            {
+                return BadRequest();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var projectToCreate = Mapper.Map<Project>(project);
+
+            _projectManagerRepository.AddProjectAsync(projectToCreate);
+
+            if (! await _projectManagerRepository.SaveAsync())
+            {
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
+
+            var createdProjectToReturn = Mapper.Map<ProjectDto>(projectToCreate);
+
+            return CreatedAtRoute("GetProject", new 
+                { 
+                    id = createdProjectToReturn.Id, 
+                }, 
+                createdProjectToReturn);
+        }  
         
     }
 }
