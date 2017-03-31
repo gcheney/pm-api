@@ -12,6 +12,8 @@ namespace ProjectManager.Services
 
         void AddProjectAsync(Project project);
 
+        void DeleteProject(Project project);
+
         Task<IEnumerable<UserStory>> GetUserStoriesByProjectIdAsync(int projectId);
 
         Task<UserStory> GetUserStoryByIdAsync(int projectId, int userStoryId);

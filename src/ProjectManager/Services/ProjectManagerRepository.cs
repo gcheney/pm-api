@@ -42,6 +42,12 @@ namespace ProjectManager.Services
             await _context.Projects.AddAsync(project);
         }
 
+        public void DeleteProject(Project project)
+        {
+            _context.RemoveRange(project.UserStories);
+            _context.Remove(project);
+        }
+
         public async Task<IEnumerable<UserStory>> GetUserStoriesByProjectIdAsync(int projectId)
         {
             return await _context.UserStories
