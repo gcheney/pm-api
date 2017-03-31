@@ -188,7 +188,7 @@ namespace ProjectManager.Controllers
         }        
 
         [HttpDelete("{projectId:int}/userstories/{id:int}")]
-        public async Task<IActionResult> DeletePointOfInterest(int projectId, int id)
+        public async Task<IActionResult> DeleteUserStory(int projectId, int id)
         {
             if (!await _projectManagerRepository.ProjectExistAsync(projectId))
             {

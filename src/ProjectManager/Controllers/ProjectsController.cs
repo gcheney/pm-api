@@ -86,6 +86,26 @@ namespace ProjectManager.Controllers
                 }, 
                 createdProjectToReturn);
         }  
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteProject(int id)
+        {
+            var project = await _projectManagerRepository.GetProjectByIdAsync(id, true);
+
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            _projectManagerRepository.DeleteProject(project);
+
+            if (!await _projectManagerRepository.SaveAsync())
+            {
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
+
+            return NoContent();
+        }
         
     }
 }
