@@ -75,6 +75,7 @@ namespace ProjectManager.Controllers
 
             if (! await _projectManagerRepository.SaveAsync())
             {
+                _logger.LogError("An error occured creating the new project");
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
@@ -105,6 +106,7 @@ namespace ProjectManager.Controllers
 
             if (projectEntity == null)
             {
+                _logger.LogInformation($"No project found with id {id}");
                 return NotFound();
             }
 
@@ -112,6 +114,7 @@ namespace ProjectManager.Controllers
 
             if (!await _projectManagerRepository.SaveAsync())
             {
+                _logger.LogError($"An error occured deleting project id: {id}");
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
@@ -125,6 +128,7 @@ namespace ProjectManager.Controllers
 
             if (project == null)
             {
+                _logger.LogInformation($"No project found with id {id}");
                 return NotFound();
             }
 
@@ -132,6 +136,7 @@ namespace ProjectManager.Controllers
 
             if (!await _projectManagerRepository.SaveAsync())
             {
+                _logger.LogError($"An error occured deleting project id: {id}");
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
