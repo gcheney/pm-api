@@ -22,7 +22,7 @@ namespace ProjectManager.Services
                 .ToListAsync();
         }
 
-        public async Task<Project> GetProjectByIdAsync(int id, bool includeUserStories)
+        public async Task<Project> GetProjectByIdAsync(int id, bool includeUserStories = false)
         {
             if (includeUserStories)
             {

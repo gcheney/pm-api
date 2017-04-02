@@ -8,7 +8,7 @@ namespace ProjectManager.Services
     {
         Task<IEnumerable<Project>> GetAllProjectsAsync();
 
-        Task<Project> GetProjectByIdAsync(int id, bool includeUserStories);
+        Task<Project> GetProjectByIdAsync(int id, bool includeUserStories = false);
 
         void AddProjectAsync(Project project);
 
