@@ -87,6 +87,37 @@ namespace ProjectManager.Controllers
                 createdProjectToReturn);
         }  
 
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> UpdateProject(int id, 
+            [FromBody] UpdateProjectDto project)
+        {
+            if (project == null)
+            {
+                return BadRequest();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var projectEntity = await _projectManagerRepository.GetProjectByIdAsync(id);
+
+            if (projectEntity == null)
+            {
+                return NotFound();
+            }
+
+            Mapper.Map(project, projectEntity);
+
+            if (!await _projectManagerRepository.SaveAsync())
+            {
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
+
+            return NoContent();
+        }
+
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteProject(int id)
         {
