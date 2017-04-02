@@ -76,6 +76,7 @@ namespace ProjectManager
                 cfg.CreateMap<CreateUserStoryDto, UserStory>();
                 cfg.CreateMap<UpdateUserStoryDto, UserStory>();
                 cfg.CreateMap<CreateProjectDto, Project>();
+                cfg.CreateMap<UpdateProjectDto, Project>();
             });
 
             app.UseMvc();
