@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.JsonPatch;
 using ProjectManager.Services;
 using ProjectManager.Models;
 using ProjectManager.Entities;
@@ -120,6 +121,49 @@ namespace ProjectManager.Controllers
 
             return NoContent();
         }
+
+        [HttpPatch("{id:int}")]
+        public async Task<IActionResult> PartiallyUpdateProject(int id,
+            [FromBody] JsonPatchDocument<UpdateProjectDto> patchDoc)
+        {
+            if (patchDoc == null)
+            {
+                return BadRequest();
+            }
+
+            var projectEntity = await _projectManagerRepository.GetProjectByIdAsync(id);
+            if (projectEntity == null)
+            {
+                _logger.LogInformation("Unable to find project with id: {id}");
+                return NotFound();
+            }
+
+            var projectToPatch = Mapper.Map<UpdateProjectDto>(projectEntity);
+
+            patchDoc.ApplyTo(projectToPatch, ModelState);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            TryValidateModel(projectToPatch);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            Mapper.Map(projectToPatch, projectEntity);
+
+            if (!await _projectManagerRepository.SaveAsync())
+            {
+                _logger.LogError($"An error occured deleting project id: {id}");
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
+
+            return NoContent();
+        }        
 
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteProject(int id)
